@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encanto de Minas - Painel Administrativo</title>
+  <style>
+    :root {
+      --dark-red: #8B1A1A;
+      --deep-red: #6B1414;
+      --warm-beige: #F5F0E8;
+      --light-beige: #FAF7F2;
+      --gold: #C8A84E;
+      --gold-light: #D4B85C;
+      --text-dark: #2C1810;
+      --text-muted: #6B5B4F;
+      --border: #E0D5C8;
+      --white: #FFFFFF;
+      --success: #2D7A3A;
+      --info: #2B6CB0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--warm-beige);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--dark-red) 0%, var(--deep-red) 100%);
+      color: var(--white);
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 12px rgba(107, 20, 20, 0.3);
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .header h1 span {
+      color: var(--gold);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .header-actions .last-update {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: var(--text-dark);
+    }
+
+    .btn-gold:hover {
+      background: var(--gold-light);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      padding: 24px 32px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+    }
+
+    .stat-card .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-card .value {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--dark-red);
+      line-height: 1;
+    }
+
+    .stat-card .icon {
+      float: right;
+      font-size: 28px;
+      opacity: 0.15;
+    }
+
+    .stat-card.gold .value { color: var(--gold); }
+    .stat-card.green .value { color: var(--success); }
+    .stat-card.blue .value { color: var(--info); }
+
+    /* Content area */
+    .content {
+      padding: 0 32px 32px;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filters input,
+    .filters select {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--white);
+      color: var(--text-dark);
+    }
+
+    .filters input:focus,
+    .filters select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(200, 168, 78, 0.2);
+    }
+
+    .filters input { min-width: 250px; }
+
+    /* Table */
+    .table-container {
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+    }
+
+    .table-header {
+      background: var(--light-beige);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .table-header .count {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--warm-beige);
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead {
+      background: var(--light-beige);
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f0ebe4;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    tr:hover td {
+      background: var(--light-beige);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-sim {
+      background: #E6F4EA;
+      color: var(--success);
+    }
+
+    .badge-nao {
+      background: #FEF3E8;
+      color: #B45309;
+    }
+
+    .badge-pending {
+      background: #E8EEF6;
+      color: var(--info);
+    }
+
+    .badge-stage {
+      background: #F3F0FF;
+      color: #5B21B6;
+    }
+
+    /* Responsive */
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+    .empty-state p { font-size: 14px; }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) {
+      .header { padding: 16px; flex-direction: column; gap: 12px; }
+      .stats-grid { padding: 16px; grid-template-columns: repeat(2, 1fr); }
+      .content { padding: 0 16px 16px; }
+      .filters input { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1><span>Encanto de Minas</span> &mdash; Painel Administrativo</h1>
+    <div class="header-actions">
+      <span class="last-update" id="lastUpdate"></span>
+      <button class="btn btn-outline" onclick="loadData()">Atualizar</button>
+      <a href="/api/leads/csv" class="btn btn-gold">Exportar CSV</a>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="icon">&#x1F465;</div>
+      <div class="label">Total Visitantes</div>
+      <div class="value" id="statVisitors">-</div>
+    </div>
+    <div class="stat-card gold">
+      <div class="icon">&#x1F4B0;</div>
+      <div class="label">Interessados Distribuir</div>
+      <div class="value" id="statDistributors">-</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="icon">&#x1F4CB;</div>
+      <div class="label">Pesquisas Respondidas</div>
+      <div class="value" id="statSurveys">-</div>
+    </div>
+    <div class="stat-card green">
+      <div class="icon">&#x2705;</div>
+      <div class="label">Fluxos Completos</div>
+      <div class="value" id="statCompleted">-</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">&#x23F3;</div>
+      <div class="label">Followups Pendentes</div>
+      <div class="value" id="statPending">-</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Buscar por nome, cidade, telefone..." oninput="filterTable()">
+      <select id="filterType" onchange="filterTable()">
+        <option value="">Todos</option>
+        <option value="Sim">Distribuidores (Sim)</option>
+        <option value="Não">Pesquisa (Não)</option>
+        <option value="pending">Em andamento</option>
+      </select>
+    </div>
+
+    <div class="table-container">
+      <div class="table-header">
+        <h2>Leads Capturados</h2>
+        <span class="count" id="leadCount">0 registros</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Nome</th>
+              <th>Cidade</th>
+              <th>Telefone</th>
+              <th>Codigo</th>
+              <th>Status</th>
+              <th>Distribuidor</th>
+              <th>Feedback</th>
+              <th>Detalhes</th>
+            </tr>
+          </thead>
+          <tbody id="leadsTable">
+            <tr><td colspan="9" class="loading">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allLeads = [];
+
+    async function loadData() {
+      try {
+        const [statsRes, leadsRes] = await Promise.all([
+          fetch('/api/stats'),
+          fetch('/api/leads')
+        ]);
+
+        const stats = await statsRes.json();
+        const leads = await leadsRes.json();
+
+        // Update stats
+        document.getElementById('statVisitors').textContent = stats.totalVisitors;
+        document.getElementById('statDistributors').textContent = stats.totalDistributors;
+        document.getElementById('statSurveys').textContent = stats.totalSurveys;
+        document.getElementById('statCompleted').textContent = stats.totalCompleted;
+        document.getElementById('statPending').textContent = stats.pendingFollowups;
+
+        // Store leads
+        allLeads = leads;
+
+        // Update timestamp
+        document.getElementById('lastUpdate').textContent =
+          'Atualizado: ' + new Date().toLocaleTimeString('pt-BR');
+
+        filterTable();
+      } catch (err) {
+        console.error('Failed to load data:', err);
+        document.getElementById('leadsTable').innerHTML =
+          '<tr><td colspan="9" class="empty-state"><p>Erro ao carregar dados</p></td></tr>';
+      }
+    }
+
+    function filterTable() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const typeFilter = document.getElementById('filterType').value;
+
+      let filtered = allLeads;
+
+      if (search) {
+        filtered = filtered.filter(l => {
+          const d = l.data;
+          const text = [d.name, d.city, d.contact_phone, l.phone, l.code].join(' ').toLowerCase();
+          return text.includes(search);
+        });
+      }
+
+      if (typeFilter === 'Sim') {
+        filtered = filtered.filter(l => l.data.wants_distribution === 'Sim');
+      } else if (typeFilter === 'Não') {
+        filtered = filtered.filter(l => l.data.wants_distribution === 'Não');
+      } else if (typeFilter === 'pending') {
+        filtered = filtered.filter(l => l.stage !== 'completed');
+      }
+
+      renderTable(filtered);
+      document.getElementById('leadCount').textContent = filtered.length + ' registros';
+    }
+
+    function renderTable(leads) {
+      const tbody = document.getElementById('leadsTable');
+
+      if (leads.length === 0) {
+        tbody.innerHTML = `
+          <tr><td colspan="9" class="empty-state">
+            <div class="icon">&#x1F4CB;</div>
+            <p>Nenhum registro encontrado</p>
+          </td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = leads.map(l => {
+        const d = l.data;
+        const dist = d.wants_distribution;
+        const distBadge = dist === 'Sim'
+          ? '<span class="badge badge-sim">Sim</span>'
+          : dist === 'Não'
+          ? '<span class="badge badge-nao">N&atilde;o</span>'
+          : '<span class="badge badge-pending">-</span>';
+
+        const stageBadge = l.stage === 'completed'
+          ? '<span class="badge badge-sim">Completo</span>'
+          : '<span class="badge badge-stage">' + escapeHtml(l.stage) + '</span>';
+
+        let details = '';
+        if (dist === 'Sim') {
+          details = [d.cep, d.start_timeline, d.dedication, d.investment]
+            .filter(Boolean).join(' | ');
+        } else if (dist === 'Não') {
+          details = [d.product_rating, d.reason_not_distributor]
+            .filter(Boolean).join(' | ');
+        }
+
+        return `<tr>
+          <td>${escapeHtml(l.created_at || '')}</td>
+          <td><strong>${escapeHtml(d.name || '-')}</strong></td>
+          <td>${escapeHtml(d.city || '-')}</td>
+          <td>${escapeHtml(d.contact_phone || l.phone)}</td>
+          <td><code>${escapeHtml(l.code || '-')}</code></td>
+          <td>${stageBadge}</td>
+          <td>${distBadge}</td>
+          <td title="${escapeHtml(d.tasting_feedback || '')}">${escapeHtml(truncate(d.tasting_feedback || '-', 40))}</td>
+          <td title="${escapeHtml(details)}">${escapeHtml(truncate(details || '-', 50))}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    function truncate(str, max) {
+      return str.length > max ? str.substring(0, max) + '...' : str;
+    }
+
+    // Auto-refresh every 30 seconds
+    loadData();
+    setInterval(loadData, 30000);
+  </script>
+</body>
+</html>

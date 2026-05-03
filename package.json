@@ -1,0 +1,22 @@
+{
+  "name": "encanto-de-minas-whatsapp-bot",
+  "version": "1.0.0",
+  "description": "WhatsApp Business API chatbot for Encanto de Minas trade event lead capture",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "better-sqlite3": "^11.7.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "form-data": "^4.0.5",
+    "googleapis": "^144.0.0",
+    "qrcode": "^1.5.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
